@@ -4,8 +4,6 @@
 
 # NetBeans private config
 /nbproject/private/
-/nbproject/private.properties
-/nbproject/private.xml
 
 # Keep shared config
 !nbproject/project.properties
@@ -21,3 +19,8 @@
 # OS files
 .DS_Store
 Thumbs.db
+
+# Editor settings
+.idea/
+.vscode/
+*.iml
