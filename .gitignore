@@ -1,0 +1,23 @@
+# Build output
+/build/
+/dist/
+
+# NetBeans private config
+/nbproject/private/
+/nbproject/private.properties
+/nbproject/private.xml
+
+# Keep shared config
+!nbproject/project.properties
+!nbproject/project.xml
+
+# Compiled Java files
+*.class
+
+# Logs / temp
+*.log
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
