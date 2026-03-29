@@ -48,7 +48,7 @@ public class LoginFrame extends JFrame {
         JLabel title = new JLabel("Inventory System Login", SwingConstants.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 22));
 
-        JLabel subtitle = new JLabel("Use the hardcoded account below", SwingConstants.CENTER);
+        JLabel subtitle = new JLabel("", SwingConstants.CENTER);
         subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
         JPanel header = new JPanel(new GridLayout(2, 1, 0, 6));

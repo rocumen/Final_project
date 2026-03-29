@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import page.Item_Page;
+import page.Supplier_Page;
 
 /**
  *
@@ -31,6 +33,12 @@ public class Main extends javax.swing.JFrame {
             WHERE is_active = 1
             ORDER BY item_name
             """;
+    private static final String DASHBOARD_SUPPLIERS_SQL = """
+            SELECT supplier_name, contact_person, phone, email
+            FROM suppliers
+            WHERE is_active = 1
+            ORDER BY supplier_name
+            """;
     private final String loggedInUser;
 
     /**
@@ -43,6 +51,7 @@ public class Main extends javax.swing.JFrame {
     public Main(String loggedInUser) {
         this.loggedInUser = loggedInUser;
         initComponents();
+        applyWindowSettings();
         initializeSessionUi();
     }
 
@@ -83,6 +92,10 @@ public class Main extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -275,19 +288,19 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(box11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
                     .addComponent(jLabel9))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
         box11Layout.setVerticalGroup(
             box11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(box11Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(jLabel9)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel10)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        panelBorder2.add(box11, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 70, 190, -1));
+        panelBorder2.add(box11, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 70, 210, 105));
 
         box12.setBackground(new java.awt.Color(255, 255, 153));
         box12.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -307,24 +320,24 @@ public class Main extends javax.swing.JFrame {
             .addGroup(box12Layout.createSequentialGroup()
                 .addGroup(box12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(box12Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jLabel8))
-                    .addGroup(box12Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
-                        .addComponent(jLabel7)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                        .addComponent(jLabel7))
+                    .addGroup(box12Layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel8)))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
         box12Layout.setVerticalGroup(
             box12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(box12Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(jLabel7)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel8)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        panelBorder2.add(box12, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 70, 180, -1));
+        panelBorder2.add(box12, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 70, 210, 105));
 
         box13.setBackground(new java.awt.Color(255, 255, 153));
         box13.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -344,10 +357,10 @@ public class Main extends javax.swing.JFrame {
             .addGroup(box13Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(box13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
                     .addGroup(box13Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel6)))
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel6))
+                    .addComponent(jLabel4))
                 .addContainerGap(81, Short.MAX_VALUE))
         );
         box13Layout.setVerticalGroup(
@@ -355,9 +368,9 @@ public class Main extends javax.swing.JFrame {
             .addGroup(box13Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         panelBorder2.add(box13, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 70, 210, 105));
@@ -383,17 +396,48 @@ public class Main extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        panelBorder2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 230, 680, 242));
+        panelBorder2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 230, 680, 170));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel11.setText("Dashboard");
         panelBorder2.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, -1, -1));
 
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel14.setText("Suppliers");
+        panelBorder2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 410, -1, -1));
+
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel15.setText("Items");
+        panelBorder2.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, -1, -1));
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Name", "Category", "Title 3", "Title 4"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(jTable2);
+
+        panelBorder2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 440, 680, 190));
+
         javax.swing.GroupLayout sidePanel1Layout = new javax.swing.GroupLayout(sidePanel1);
         sidePanel1.setLayout(sidePanel1Layout);
         sidePanel1Layout.setHorizontalGroup(
             sidePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelBorder2, javax.swing.GroupLayout.DEFAULT_SIZE, 940, Short.MAX_VALUE)
+            .addComponent(panelBorder2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         sidePanel1Layout.setVerticalGroup(
             sidePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -445,21 +489,62 @@ public class Main extends javax.swing.JFrame {
         //</editor-fold>
     }
 
+    private void applyWindowSettings() {
+        setSize(960, 680);
+        setMinimumSize(new java.awt.Dimension(960, 680));
+        setResizable(false);
+        setLocationRelativeTo(null);
+    }
+
     private void initializeSessionUi() {
         jLabel1.setText(loggedInUser);
-        jPanel3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        jLabel3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        configureDashboardTables();
+        makeClickable(jPanel2, jLabel2, null);
+        makeClickable(jPanel5, jLabel5, this::openItemsPage);
+        makeClickable(jPanel7, jLabel13, this::openSuppliersPage);
+        makeClickable(jPanel3, jLabel3, this::logout);
         loadDashboardData();
+    }
 
-        MouseAdapter logoutHandler = new MouseAdapter() {
+    private void configureDashboardTables() {
+        jTable1.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Item Name", "Category", "Stock", "SKU"}
+        ) {
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
+
+        jTable2.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Supplier Name", "Contact Person", "Phone", "Email"}
+        ) {
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
+    }
+
+    private void makeClickable(java.awt.Component panel, java.awt.Component label, Runnable action) {
+        panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        if (action == null) {
+            return;
+        }
+
+        MouseAdapter handler = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                logout();
+                action.run();
             }
         };
 
-        jPanel3.addMouseListener(logoutHandler);
-        jLabel3.addMouseListener(logoutHandler);
+        panel.addMouseListener(handler);
+        label.addMouseListener(handler);
     }
 
     private void loadDashboardData() {
@@ -468,6 +553,7 @@ public class Main extends javax.swing.JFrame {
             jLabel8.setText(String.valueOf(fetchCount(connection, LOW_STOCK_SQL)));
             jLabel10.setText(String.valueOf(fetchOptionalCount(connection, TOTAL_SUPPLIERS_SQL, "suppliers")));
             loadItemsTable(connection);
+            loadSuppliersTable(connection);
         } catch (SQLException ex) {
             logger.log(java.util.logging.Level.SEVERE, "Unable to load dashboard data", ex);
             JOptionPane.showMessageDialog(
@@ -518,11 +604,44 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
+    private void loadSuppliersTable(Connection connection) throws SQLException {
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        model.setRowCount(0);
+
+        try (PreparedStatement statement = connection.prepareStatement(DASHBOARD_SUPPLIERS_SQL);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                model.addRow(new Object[]{
+                    resultSet.getString("supplier_name"),
+                    resultSet.getString("contact_person"),
+                    resultSet.getString("phone"),
+                    resultSet.getString("email")
+                });
+            }
+        } catch (SQLException ex) {
+            if (isMissingTable(ex, "suppliers")) {
+                logger.log(java.util.logging.Level.WARNING, "Optional table missing: suppliers");
+                return;
+            }
+            throw ex;
+        }
+    }
+
     private boolean isMissingTable(SQLException ex, String tableName) {
         String message = ex.getMessage();
         return message != null
                 && message.toLowerCase().contains("doesn't exist")
                 && message.toLowerCase().contains(tableName.toLowerCase());
+    }
+
+    private void openItemsPage() {
+        new Item_Page(loggedInUser).setVisible(true);
+        dispose();
+    }
+
+    private void openSuppliersPage() {
+        new Supplier_Page(loggedInUser).setVisible(true);
+        dispose();
     }
 
     private void logout() {
@@ -548,6 +667,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -563,7 +684,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private panels.PanelBorder panelBorder1;
     private panels.PanelBorder panelBorder2;
     private panels.SidePanel sidePanel1;

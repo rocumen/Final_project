@@ -6,10 +6,8 @@ package page;
 
 import db.DatabaseConnection;
 import java.awt.Cursor;
-import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import main.LoginFrame;
 import main.Main;
@@ -29,47 +29,46 @@ import main.Main;
  *
  * @author Reynald
  */
-public class Item_Page extends javax.swing.JFrame {
+public class Supplier_Page extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Item_Page.class.getName());
-    private static final String BASE_ITEMS_SQL = """
-            SELECT item_id, item_name, category, sku, stock, unit_price
-            FROM items
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Supplier_Page.class.getName());
+    private static final String BASE_SUPPLIERS_SQL = """
+            SELECT supplier_id, supplier_name, contact_person, phone, email, address
+            FROM suppliers
             WHERE is_active = 1
             """;
-    private static final String INSERT_ITEM_SQL = """
-            INSERT INTO items (item_name, category, sku, stock, low_stock_threshold, unit_price, description, is_active)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+    private static final String INSERT_SUPPLIER_SQL = """
+            INSERT INTO suppliers (supplier_name, contact_person, phone, email, address, is_active)
+            VALUES (?, ?, ?, ?, ?, 1)
             """;
-    private static final String UPDATE_ITEM_SQL = """
-            UPDATE items
-            SET item_name = ?, category = ?, sku = ?, stock = ?, low_stock_threshold = ?, unit_price = ?, description = ?
-            WHERE item_id = ? OR sku = ?
+    private static final String UPDATE_SUPPLIER_SQL = """
+            UPDATE suppliers
+            SET supplier_name = ?, contact_person = ?, phone = ?, email = ?, address = ?
+            WHERE supplier_id = ? OR supplier_name = ?
             """;
-    private static final String DELETE_ITEM_SQL = """
-            UPDATE items
+    private static final String DELETE_SUPPLIER_SQL = """
+            UPDATE suppliers
             SET is_active = 0
-            WHERE item_id = ? OR sku = ?
+            WHERE supplier_id = ? OR supplier_name = ?
             """;
-    private static final String FIND_ITEM_SQL = """
-            SELECT item_id, item_name, category, sku, stock, low_stock_threshold, unit_price, description
-            FROM items
-            WHERE is_active = 1 AND (item_id = ? OR sku = ?)
+    private static final String FIND_SUPPLIER_SQL = """
+            SELECT supplier_id, supplier_name, contact_person, phone, email, address
+            FROM suppliers
+            WHERE is_active = 1 AND (supplier_id = ? OR supplier_name = ?)
             LIMIT 1
             """;
     private final String loggedInUser;
 
     /**
-     * Creates new form Item_Page
+     * Creates new form Supplier_Page
      */
-    public Item_Page() {
+    public Supplier_Page() {
         this("User");
     }
 
-    public Item_Page(String loggedInUser) {
+    public Supplier_Page(String loggedInUser) {
         this.loggedInUser = loggedInUser;
         initComponents();
-        applyWindowSettings();
         initializePage();
     }
 
@@ -82,7 +81,7 @@ public class Item_Page extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelBorder1 = new panels.PanelBorder();
+        jPanel9 = new javax.swing.JPanel();
         sidePanel2 = new panels.SidePanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -97,26 +96,26 @@ public class Item_Page extends javax.swing.JFrame {
         jPanel8 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jTextField3 = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
         jTextField2 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jLabel8 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(940, 640));
 
-        panelBorder1.setBackground(new java.awt.Color(229, 229, 229));
-        panelBorder1.setPreferredSize(new java.awt.Dimension(920, 640));
+        jPanel9.setBackground(new java.awt.Color(229, 229, 229));
+        jPanel9.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         sidePanel2.setBackground(new java.awt.Color(102, 102, 102));
         sidePanel2.setOpaque(true);
@@ -278,8 +277,19 @@ public class Item_Page extends javax.swing.JFrame {
 
         sidePanel2.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 220, -1));
 
+        jPanel9.add(sidePanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 652));
+
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel4.setText("Item");
+        jLabel4.setText("Manage Supplier");
+        jPanel9.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(261, 6, -1, -1));
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sort by Name", "Sort by Category", "Sort by Price", "Sort by SKU" }));
+        jPanel9.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(261, 49, -1, -1));
+        jPanel9.add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 50, 111, -1));
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel8.setText("Search:");
+        jPanel9.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 50, -1, -1));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -302,140 +312,42 @@ public class Item_Page extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("Add Item");
+        jPanel9.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(261, 95, 526, 381));
 
-        jButton2.setText("Edit Item");
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jButton2.setText("Edit Supplier");
+        jPanel4.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
+        jPanel4.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 80, -1));
 
         jLabel6.setText("ID/SKU");
+        jPanel4.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addGap(27, 27, 27)
-                            .addComponent(jButton2))
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addGap(48, 48, 48)
-                            .addComponent(jLabel6))))
-                .addContainerGap(19, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jPanel9.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 500, 135, 116));
 
-        jButton3.setText("Delete Item");
+        jButton1.setText("Add Supplier");
+        jPanel9.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(294, 511, -1, -1));
+
+        jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jButton3.setText("Remove Supplier");
+        jPanel7.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(17, 21, -1, -1));
+        jPanel7.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 80, -1));
 
         jLabel7.setText("ID/SKU");
+        jPanel7.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
 
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel7Layout.createSequentialGroup()
-                            .addGap(27, 27, 27)
-                            .addComponent(jButton3))
-                        .addGroup(jPanel7Layout.createSequentialGroup()
-                            .addGap(55, 55, 55)
-                            .addComponent(jLabel7))))
-                .addContainerGap(33, Short.MAX_VALUE))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
-        );
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sort by Name", "Sort by Category", "Sort by Price", "Sort by SKU" }));
-
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel8.setText("Search:");
-
-        javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
-        panelBorder1.setLayout(panelBorder1Layout);
-        panelBorder1Layout.setHorizontalGroup(
-            panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addComponent(sidePanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51)
-                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addGroup(panelBorder1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jButton1)
-                        .addGap(27, 27, 27)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelBorder1Layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(172, 172, 172)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 38, Short.MAX_VALUE))
-        );
-        panelBorder1Layout.setVerticalGroup(
-            panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBorder1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(sidePanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelBorder1Layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(24, 24, 24)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(panelBorder1Layout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(jButton1)))
-                        .addGap(26, 26, 26))
-                    .addGroup(panelBorder1Layout.createSequentialGroup()
-                        .addGroup(panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
+        jPanel9.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 500, 150, 116));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, 809, Short.MAX_VALUE)
+            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -443,45 +355,89 @@ public class Item_Page extends javax.swing.JFrame {
 
     private void initializePage() {
         jLabel1.setText(loggedInUser);
-        jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        jTable1.setRowSelectionAllowed(true);
-        jButton1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        jButton2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        jButton3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        makeClickable(jPanel2, jLabel2, this::openDashboard);
-        makeClickable(jPanel5, jLabel5, null);
-        makeClickable(jPanel6, jLabel12, this::openSuppliersPage);
-        makeClickable(jPanel3, jLabel3, this::logout);
-
-        jButton1.addActionListener(e -> showAddItemDialog());
-        jButton2.addActionListener(e -> showEditItemDialog());
-        jButton3.addActionListener(e -> deleteItem());
-        jComboBox1.addActionListener(e -> loadItemsTable());
-        jTextField3.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadItemsTable();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadItemsTable();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadItemsTable();
-            }
-        });
-
-        loadItemsTable();
-    }
-
-    private void applyWindowSettings() {
         setSize(980, 700);
         setMinimumSize(new java.awt.Dimension(980, 700));
         setResizable(false);
         setLocationRelativeTo(null);
+
+        configureSupplierUi();
+        configureNavigation();
+        configureEvents();
+        loadSuppliersTable();
+    }
+
+    private void configureSupplierUi() {
+        jLabel6.setText("ID/Name");
+        jLabel7.setText("ID/Name");
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
+            "Sort by Name",
+            "Sort by Contact",
+            "Sort by Email"
+        }));
+
+        jTable1.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Supplier Name", "Contact Person", "Phone", "Email", "Address"}
+        ) {
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
+        jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
+    private void configureNavigation() {
+        makeClickable(jPanel2, jLabel2, this::openDashboard);
+        makeClickable(jPanel5, jLabel5, this::openItemsPage);
+        makeClickable(jPanel6, jLabel12, null);
+        makeClickable(jPanel3, jLabel3, this::logout);
+    }
+
+    private void configureEvents() {
+        jButton1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jButton2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jButton3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        jButton1.addActionListener(e -> showAddSupplierDialog());
+        jButton2.addActionListener(e -> showEditSupplierDialog());
+        jButton3.addActionListener(e -> deleteSupplier());
+        jComboBox1.addActionListener(e -> loadSuppliersTable());
+        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    syncSelectedSupplier();
+                }
+            }
+        });
+        jTextField3.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                loadSuppliersTable();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                loadSuppliersTable();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                loadSuppliersTable();
+            }
+        });
+    }
+
+    private void syncSelectedSupplier() {
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow < 0) {
+            return;
+        }
+
+        String supplierName = String.valueOf(jTable1.getValueAt(selectedRow, 0));
+        jTextField1.setText(supplierName);
+        jTextField2.setText(supplierName);
     }
 
     private void makeClickable(java.awt.Component panel, java.awt.Component label, Runnable action) {
@@ -503,15 +459,15 @@ public class Item_Page extends javax.swing.JFrame {
         label.addMouseListener(handler);
     }
 
-    private void loadItemsTable() {
+    private void loadSuppliersTable() {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
 
         String search = jTextField3.getText().trim();
-        StringBuilder sql = new StringBuilder(BASE_ITEMS_SQL);
+        StringBuilder sql = new StringBuilder(BASE_SUPPLIERS_SQL);
 
         if (!search.isEmpty()) {
-            sql.append(" AND (item_name LIKE ? OR category LIKE ? OR sku LIKE ?)");
+            sql.append(" AND (supplier_name LIKE ? OR contact_person LIKE ? OR phone LIKE ? OR email LIKE ?)");
         }
         sql.append(" ORDER BY ").append(getSortColumn());
 
@@ -523,167 +479,151 @@ public class Item_Page extends javax.swing.JFrame {
                 statement.setString(1, keyword);
                 statement.setString(2, keyword);
                 statement.setString(3, keyword);
+                statement.setString(4, keyword);
             }
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     model.addRow(new Object[]{
-                        resultSet.getString("item_name"),
-                        resultSet.getString("category"),
-                        resultSet.getString("sku"),
-                        resultSet.getInt("stock"),
-                        resultSet.getBigDecimal("unit_price")
+                        resultSet.getString("supplier_name"),
+                        resultSet.getString("contact_person"),
+                        resultSet.getString("phone"),
+                        resultSet.getString("email"),
+                        resultSet.getString("address")
                     });
                 }
             }
         } catch (SQLException ex) {
-            showDatabaseError("Unable to load items.", ex);
+            showDatabaseError("Unable to load suppliers.", ex);
         }
     }
 
     private String getSortColumn() {
         return switch (jComboBox1.getSelectedIndex()) {
-            case 1 -> "category";
-            case 2 -> "unit_price";
-            case 3 -> "sku";
-            default -> "item_name";
+            case 1 -> "contact_person";
+            case 2 -> "email";
+            default -> "supplier_name";
         };
     }
 
-    private void showAddItemDialog() {
-        ItemFormData formData = promptForItem("Add Item", null);
+    private void showAddSupplierDialog() {
+        SupplierFormData formData = promptForSupplier("Add Supplier", null);
         if (formData == null) {
             return;
         }
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(INSERT_ITEM_SQL)) {
-
-            statement.setString(1, formData.itemName());
-            statement.setString(2, formData.category());
-            statement.setString(3, formData.sku());
-            statement.setInt(4, formData.stock());
-            statement.setInt(5, formData.lowStockThreshold());
-            statement.setBigDecimal(6, formData.unitPrice());
-            statement.setString(7, formData.description());
+             PreparedStatement statement = connection.prepareStatement(INSERT_SUPPLIER_SQL)) {
+            statement.setString(1, formData.supplierName());
+            statement.setString(2, formData.contactPerson());
+            statement.setString(3, formData.phone());
+            statement.setString(4, formData.email());
+            statement.setString(5, formData.address());
             statement.executeUpdate();
 
-            JOptionPane.showMessageDialog(this, "Item added successfully.");
-            loadItemsTable();
+            JOptionPane.showMessageDialog(this, "Supplier added successfully.");
+            jTextField1.setText("");
+            jTextField2.setText("");
+            loadSuppliersTable();
         } catch (SQLException ex) {
-            showDatabaseError("Unable to add item.", ex);
+            showDatabaseError("Unable to add supplier.", ex);
         }
     }
 
-    private void showEditItemDialog() {
-        String identifier = resolveIdentifierForEdit();
-        if (identifier == null || identifier.isBlank()) {
-            JOptionPane.showMessageDialog(this, "Select a row or enter an ID/SKU first.");
+    private void showEditSupplierDialog() {
+        String identifier = resolveIdentifier(jTextField1);
+        if (identifier == null) {
+            JOptionPane.showMessageDialog(this, "Select a row or enter an ID/Name first.");
             return;
         }
 
         try (Connection connection = DatabaseConnection.getConnection()) {
-            ItemRecord existingItem = findItem(connection, identifier);
-            if (existingItem == null) {
-                JOptionPane.showMessageDialog(this, "Item not found.");
+            SupplierRecord existingSupplier = findSupplier(connection, identifier);
+            if (existingSupplier == null) {
+                JOptionPane.showMessageDialog(this, "Supplier not found.");
                 return;
             }
 
-            ItemFormData updatedItem = promptForItem("Update Item", existingItem);
-            if (updatedItem == null) {
+            SupplierFormData updatedSupplier = promptForSupplier("Update Supplier", existingSupplier);
+            if (updatedSupplier == null) {
                 return;
             }
 
-            try (PreparedStatement statement = connection.prepareStatement(UPDATE_ITEM_SQL)) {
-                statement.setString(1, updatedItem.itemName());
-                statement.setString(2, updatedItem.category());
-                statement.setString(3, updatedItem.sku());
-                statement.setInt(4, updatedItem.stock());
-                statement.setInt(5, updatedItem.lowStockThreshold());
-                statement.setBigDecimal(6, updatedItem.unitPrice());
-                statement.setString(7, updatedItem.description());
-                statement.setInt(8, existingItem.itemId());
-                statement.setString(9, existingItem.sku());
+            try (PreparedStatement statement = connection.prepareStatement(UPDATE_SUPPLIER_SQL)) {
+                statement.setString(1, updatedSupplier.supplierName());
+                statement.setString(2, updatedSupplier.contactPerson());
+                statement.setString(3, updatedSupplier.phone());
+                statement.setString(4, updatedSupplier.email());
+                statement.setString(5, updatedSupplier.address());
+                statement.setInt(6, existingSupplier.supplierId());
+                statement.setString(7, existingSupplier.supplierName());
 
                 int updated = statement.executeUpdate();
                 if (updated == 0) {
-                    JOptionPane.showMessageDialog(this, "No item was updated.");
+                    JOptionPane.showMessageDialog(this, "No supplier was updated.");
                     return;
                 }
             }
 
-            JOptionPane.showMessageDialog(this, "Item updated successfully.");
+            JOptionPane.showMessageDialog(this, "Supplier updated successfully.");
             jTextField1.setText("");
-            loadItemsTable();
+            loadSuppliersTable();
         } catch (SQLException ex) {
-            showDatabaseError("Unable to update item.", ex);
+            showDatabaseError("Unable to update supplier.", ex);
         }
     }
 
-    private void deleteItem() {
-        String identifier = resolveIdentifierForDelete();
-        if (identifier == null || identifier.isBlank()) {
-            JOptionPane.showMessageDialog(this, "Select a row or enter an ID/SKU first.");
+    private void deleteSupplier() {
+        String identifier = resolveIdentifier(jTextField2);
+        if (identifier == null) {
+            JOptionPane.showMessageDialog(this, "Select a row or enter an ID/Name first.");
             return;
         }
 
-        int confirm = JOptionPane.showConfirmDialog(
+        int choice = JOptionPane.showConfirmDialog(
                 this,
-                "Delete this item?",
-                "Delete Item",
+                "Remove this supplier?",
+                "Remove Supplier",
                 JOptionPane.YES_NO_OPTION
         );
-        if (confirm != JOptionPane.YES_OPTION) {
+        if (choice != JOptionPane.YES_OPTION) {
             return;
         }
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_ITEM_SQL)) {
+             PreparedStatement statement = connection.prepareStatement(DELETE_SUPPLIER_SQL)) {
             statement.setInt(1, parseIdentifierAsInt(identifier));
             statement.setString(2, identifier);
 
             int updated = statement.executeUpdate();
             if (updated == 0) {
-                JOptionPane.showMessageDialog(this, "Item not found.");
+                JOptionPane.showMessageDialog(this, "Supplier not found.");
                 return;
             }
 
-            JOptionPane.showMessageDialog(this, "Item deleted successfully.");
+            JOptionPane.showMessageDialog(this, "Supplier removed successfully.");
             jTextField2.setText("");
-            loadItemsTable();
+            loadSuppliersTable();
         } catch (SQLException ex) {
-            showDatabaseError("Unable to delete item.", ex);
+            showDatabaseError("Unable to remove supplier.", ex);
         }
     }
 
-    private String resolveIdentifierForEdit() {
-        String typed = jTextField1.getText().trim();
+    private String resolveIdentifier(JTextField field) {
+        String typed = field.getText().trim();
         if (!typed.isEmpty()) {
             return typed;
         }
 
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow >= 0) {
-            return String.valueOf(jTable1.getValueAt(selectedRow, 2));
+            return String.valueOf(jTable1.getValueAt(selectedRow, 0));
         }
         return null;
     }
 
-    private String resolveIdentifierForDelete() {
-        String typed = jTextField2.getText().trim();
-        if (!typed.isEmpty()) {
-            return typed;
-        }
-
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow >= 0) {
-            return String.valueOf(jTable1.getValueAt(selectedRow, 2));
-        }
-        return null;
-    }
-
-    private ItemRecord findItem(Connection connection, String identifier) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(FIND_ITEM_SQL)) {
+    private SupplierRecord findSupplier(Connection connection, String identifier) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(FIND_SUPPLIER_SQL)) {
             statement.setInt(1, parseIdentifierAsInt(identifier));
             statement.setString(2, identifier);
 
@@ -692,44 +632,36 @@ public class Item_Page extends javax.swing.JFrame {
                     return null;
                 }
 
-                return new ItemRecord(
-                        resultSet.getInt("item_id"),
-                        resultSet.getString("item_name"),
-                        resultSet.getString("category"),
-                        resultSet.getString("sku"),
-                        resultSet.getInt("stock"),
-                        resultSet.getInt("low_stock_threshold"),
-                        resultSet.getBigDecimal("unit_price"),
-                        resultSet.getString("description")
+                return new SupplierRecord(
+                        resultSet.getInt("supplier_id"),
+                        resultSet.getString("supplier_name"),
+                        resultSet.getString("contact_person"),
+                        resultSet.getString("phone"),
+                        resultSet.getString("email"),
+                        resultSet.getString("address")
                 );
             }
         }
     }
 
-    private ItemFormData promptForItem(String title, ItemRecord existingItem) {
-        JTextField nameField = new JTextField(existingItem != null ? existingItem.itemName() : "");
-        JTextField categoryField = new JTextField(existingItem != null ? existingItem.category() : "");
-        JTextField skuField = new JTextField(existingItem != null ? existingItem.sku() : "");
-        JTextField stockField = new JTextField(existingItem != null ? String.valueOf(existingItem.stock()) : "0");
-        JTextField thresholdField = new JTextField(existingItem != null ? String.valueOf(existingItem.lowStockThreshold()) : "10");
-        JTextField priceField = new JTextField(existingItem != null ? existingItem.unitPrice().toPlainString() : "0.00");
-        JTextField descriptionField = new JTextField(existingItem != null ? safe(existingItem.description()) : "");
+    private SupplierFormData promptForSupplier(String title, SupplierRecord existingSupplier) {
+        JTextField nameField = new JTextField(existingSupplier != null ? existingSupplier.supplierName() : "");
+        JTextField contactField = new JTextField(existingSupplier != null ? safe(existingSupplier.contactPerson()) : "");
+        JTextField phoneField = new JTextField(existingSupplier != null ? safe(existingSupplier.phone()) : "");
+        JTextField emailField = new JTextField(existingSupplier != null ? safe(existingSupplier.email()) : "");
+        JTextField addressField = new JTextField(existingSupplier != null ? safe(existingSupplier.address()) : "");
 
-        JPanel panel = new JPanel(new GridLayout(0, 2, 8, 8));
-        panel.add(new JLabel("Name"));
+        JPanel panel = new JPanel(new java.awt.GridLayout(0, 2, 8, 8));
+        panel.add(new JLabel("Supplier Name"));
         panel.add(nameField);
-        panel.add(new JLabel("Category"));
-        panel.add(categoryField);
-        panel.add(new JLabel("SKU"));
-        panel.add(skuField);
-        panel.add(new JLabel("Stock"));
-        panel.add(stockField);
-        panel.add(new JLabel("Low Stock Threshold"));
-        panel.add(thresholdField);
-        panel.add(new JLabel("Unit Price"));
-        panel.add(priceField);
-        panel.add(new JLabel("Description"));
-        panel.add(descriptionField);
+        panel.add(new JLabel("Contact Person"));
+        panel.add(contactField);
+        panel.add(new JLabel("Phone"));
+        panel.add(phoneField);
+        panel.add(new JLabel("Email"));
+        panel.add(emailField);
+        panel.add(new JLabel("Address"));
+        panel.add(addressField);
 
         int result = JOptionPane.showConfirmDialog(
                 this,
@@ -743,30 +675,19 @@ public class Item_Page extends javax.swing.JFrame {
             return null;
         }
 
-        try {
-            String itemName = nameField.getText().trim();
-            String category = categoryField.getText().trim();
-            String sku = skuField.getText().trim();
-            int stock = Integer.parseInt(stockField.getText().trim());
-            int threshold = Integer.parseInt(thresholdField.getText().trim());
-            BigDecimal unitPrice = new BigDecimal(priceField.getText().trim());
-            String description = descriptionField.getText().trim();
-
-            if (itemName.isEmpty() || category.isEmpty() || sku.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Name, category, and SKU are required.");
-                return null;
-            }
-
-            if (stock < 0 || threshold < 0 || unitPrice.compareTo(BigDecimal.ZERO) < 0) {
-                JOptionPane.showMessageDialog(this, "Stock, threshold, and price must not be negative.");
-                return null;
-            }
-
-            return new ItemFormData(itemName, category, sku, stock, threshold, unitPrice, description);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Stock and threshold must be whole numbers.");
+        String supplierName = nameField.getText().trim();
+        if (supplierName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Supplier name is required.");
             return null;
         }
+
+        return new SupplierFormData(
+                supplierName,
+                contactField.getText().trim(),
+                phoneField.getText().trim(),
+                emailField.getText().trim(),
+                addressField.getText().trim()
+        );
     }
 
     private int parseIdentifierAsInt(String identifier) {
@@ -796,8 +717,8 @@ public class Item_Page extends javax.swing.JFrame {
         dispose();
     }
 
-    private void openSuppliersPage() {
-        new Supplier_Page(loggedInUser).setVisible(true);
+    private void openItemsPage() {
+        new Item_Page(loggedInUser).setVisible(true);
         dispose();
     }
 
@@ -815,26 +736,22 @@ public class Item_Page extends javax.swing.JFrame {
         }
     }
 
-    private record ItemRecord(
-            int itemId,
-            String itemName,
-            String category,
-            String sku,
-            int stock,
-            int lowStockThreshold,
-            BigDecimal unitPrice,
-            String description
+    private record SupplierRecord(
+            int supplierId,
+            String supplierName,
+            String contactPerson,
+            String phone,
+            String email,
+            String address
     ) {
     }
 
-    private record ItemFormData(
-            String itemName,
-            String category,
-            String sku,
-            int stock,
-            int lowStockThreshold,
-            BigDecimal unitPrice,
-            String description
+    private record SupplierFormData(
+            String supplierName,
+            String contactPerson,
+            String phone,
+            String email,
+            String address
     ) {
     }
 
@@ -860,7 +777,7 @@ public class Item_Page extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Item_Page().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new Supplier_Page().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -886,12 +803,12 @@ public class Item_Page extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
-    private panels.PanelBorder panelBorder1;
     private panels.SidePanel sidePanel2;
     // End of variables declaration//GEN-END:variables
 }
