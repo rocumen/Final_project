@@ -12,15 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import main.LoginFrame;
 import main.Main;
@@ -29,44 +23,25 @@ import main.Main;
  *
  * @author Reynald
  */
-public class Supplier_Page extends javax.swing.JFrame {
+public class Low_stocks_page extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Supplier_Page.class.getName());
-    private static final String BASE_SUPPLIERS_SQL = """
-            SELECT supplier_id, supplier_name, contact_person, phone, email, address
-            FROM suppliers
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Low_stocks_page.class.getName());
+    private static final String BASE_LOW_STOCKS_SQL = """
+            SELECT item_name, category, sku, stock, unit_price
+            FROM items
             WHERE is_active = 1
-            """;
-    private static final String INSERT_SUPPLIER_SQL = """
-            INSERT INTO suppliers (supplier_name, contact_person, phone, email, address, is_active)
-            VALUES (?, ?, ?, ?, ?, 1)
-            """;
-    private static final String UPDATE_SUPPLIER_SQL = """
-            UPDATE suppliers
-            SET supplier_name = ?, contact_person = ?, phone = ?, email = ?, address = ?
-            WHERE supplier_id = ? OR supplier_name = ?
-            """;
-    private static final String DELETE_SUPPLIER_SQL = """
-            UPDATE suppliers
-            SET is_active = 0
-            WHERE supplier_id = ? OR supplier_name = ?
-            """;
-    private static final String FIND_SUPPLIER_SQL = """
-            SELECT supplier_id, supplier_name, contact_person, phone, email, address
-            FROM suppliers
-            WHERE is_active = 1 AND (supplier_id = ? OR supplier_name = ?)
-            LIMIT 1
+              AND stock <= low_stock_threshold
             """;
     private final String loggedInUser;
 
     /**
-     * Creates new form Supplier_Page
+     * Creates new form Low_stocks_page
      */
-    public Supplier_Page() {
+    public Low_stocks_page() {
         this("User");
     }
 
-    public Supplier_Page(String loggedInUser) {
+    public Low_stocks_page(String loggedInUser) {
         this.loggedInUser = loggedInUser;
         initComponents();
         initializePage();
@@ -95,7 +70,7 @@ public class Supplier_Page extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
-        jPanel10 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -103,15 +78,6 @@ public class Supplier_Page extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jPanel4 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jPanel7 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jTextField2 = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -278,36 +244,36 @@ public class Supplier_Page extends javax.swing.JFrame {
 
         sidePanel2.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 220, -1));
 
-        jPanel10.setBackground(new java.awt.Color(102, 102, 102));
-        jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel7.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
         jLabel14.setText("Manage Report");
 
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(47, 47, 47)
                 .addComponent(jLabel14)
                 .addContainerGap(65, Short.MAX_VALUE))
         );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jLabel14)
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        sidePanel2.add(jPanel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 220, -1));
+        sidePanel2.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 220, -1));
 
         jPanel9.add(sidePanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 652));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel4.setText("Manage Supplier");
+        jLabel4.setText("Low stocks");
         jPanel9.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(261, 6, -1, -1));
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sort by Name", "Sort by Category", "Sort by Price", "Sort by SKU" }));
@@ -341,36 +307,13 @@ public class Supplier_Page extends javax.swing.JFrame {
 
         jPanel9.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(261, 95, 526, 381));
 
-        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jButton2.setText("Edit Supplier");
-        jPanel4.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
-        jPanel4.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 80, -1));
-
-        jLabel6.setText("ID/SKU");
-        jPanel4.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
-
-        jPanel9.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 500, 135, 116));
-
-        jButton1.setText("Add Supplier");
-        jPanel9.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(294, 511, -1, -1));
-
-        jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jButton3.setText("Remove Supplier");
-        jPanel7.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(17, 21, -1, -1));
-        jPanel7.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 80, -1));
-
-        jLabel7.setText("ID/SKU");
-        jPanel7.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
-
-        jPanel9.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 500, 150, 116));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 840, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -382,91 +325,65 @@ public class Supplier_Page extends javax.swing.JFrame {
 
     private void initializePage() {
         jLabel1.setText(loggedInUser);
-        setSize(980, 700);
-        setMinimumSize(new java.awt.Dimension(980, 700));
+        setSize(900, 700);
+        setMinimumSize(new java.awt.Dimension(900, 700));
         setResizable(false);
         setLocationRelativeTo(null);
 
-        configureSupplierUi();
+        configureTable();
         configureNavigation();
         configureEvents();
-        loadSuppliersTable();
+        loadLowStocksTable();
     }
 
-    private void configureSupplierUi() {
-        jLabel6.setText("ID/Name");
-        jLabel7.setText("ID/Name");
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
-            "Sort by Name",
-            "Sort by Contact",
-            "Sort by Email"
-        }));
-
+    private void configureTable() {
         jTable1.setModel(new DefaultTableModel(
                 new Object[][]{},
-                new String[]{"Supplier Name", "Contact Person", "Phone", "Email", "Address"}
+                new String[]{"Name", "Category", "SKU", "Stock", "Unit Price"}
         ) {
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return false;
             }
         });
-        jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
     private void configureNavigation() {
         makeClickable(jPanel2, jLabel2, this::openDashboard);
         makeClickable(jPanel5, jLabel5, this::openItemsPage);
-        makeClickable(jPanel6, jLabel12, null);
-        makeClickable(jPanel8, jLabel13, this::openLowStocksPage);
-        makeClickable(jPanel10, jLabel14, this::openManageReportPage);
+        makeClickable(jPanel6, jLabel12, this::openSuppliersPage);
+        makeClickable(jPanel8, jLabel13, null);
+        makeClickable(jPanel7, jLabel14, this::openManageReportPage);
         makeClickable(jPanel3, jLabel3, this::logout);
     }
 
     private void configureEvents() {
-        jButton1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        jButton2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        jButton3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+            "Sort by Name",
+            "Sort by Category",
+            "Sort by Price",
+            "Sort by SKU",
+            "Sort by Stock"
+        }));
 
-        jButton1.addActionListener(e -> showAddSupplierDialog());
-        jButton2.addActionListener(e -> showEditSupplierDialog());
-        jButton3.addActionListener(e -> deleteSupplier());
-        jComboBox1.addActionListener(e -> loadSuppliersTable());
-        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    syncSelectedSupplier();
-                }
-            }
-        });
+        jComboBox1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jComboBox1.addActionListener(e -> loadLowStocksTable());
         jTextField3.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                loadSuppliersTable();
+                loadLowStocksTable();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                loadSuppliersTable();
+                loadLowStocksTable();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                loadSuppliersTable();
+                loadLowStocksTable();
             }
         });
-    }
-
-    private void syncSelectedSupplier() {
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow < 0) {
-            return;
-        }
-
-        String supplierName = String.valueOf(jTable1.getValueAt(selectedRow, 0));
-        jTextField1.setText(supplierName);
-        jTextField2.setText(supplierName);
     }
 
     private void makeClickable(java.awt.Component panel, java.awt.Component label, Runnable action) {
@@ -488,15 +405,15 @@ public class Supplier_Page extends javax.swing.JFrame {
         label.addMouseListener(handler);
     }
 
-    private void loadSuppliersTable() {
+    private void loadLowStocksTable() {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
 
         String search = jTextField3.getText().trim();
-        StringBuilder sql = new StringBuilder(BASE_SUPPLIERS_SQL);
+        StringBuilder sql = new StringBuilder(BASE_LOW_STOCKS_SQL);
 
         if (!search.isEmpty()) {
-            sql.append(" AND (supplier_name LIKE ? OR contact_person LIKE ? OR phone LIKE ? OR email LIKE ?)");
+            sql.append(" AND (item_name LIKE ? OR category LIKE ? OR sku LIKE ?)");
         }
         sql.append(" ORDER BY ").append(getSortColumn());
 
@@ -508,237 +425,38 @@ public class Supplier_Page extends javax.swing.JFrame {
                 statement.setString(1, keyword);
                 statement.setString(2, keyword);
                 statement.setString(3, keyword);
-                statement.setString(4, keyword);
             }
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    model.addRow(new Object[]{
-                        resultSet.getString("supplier_name"),
-                        resultSet.getString("contact_person"),
-                        resultSet.getString("phone"),
-                        resultSet.getString("email"),
-                        resultSet.getString("address")
+                    model.addRow(new Object[] {
+                        resultSet.getString("item_name"),
+                        resultSet.getString("category"),
+                        resultSet.getString("sku"),
+                        resultSet.getInt("stock"),
+                        resultSet.getBigDecimal("unit_price")
                     });
                 }
             }
         } catch (SQLException ex) {
-            showDatabaseError("Unable to load suppliers.", ex);
+            logger.log(java.util.logging.Level.SEVERE, "Unable to load low stock items.", ex);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Unable to load low stock items.\n" + ex.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
     private String getSortColumn() {
         return switch (jComboBox1.getSelectedIndex()) {
-            case 1 -> "contact_person";
-            case 2 -> "email";
-            default -> "supplier_name";
+            case 1 -> "category";
+            case 2 -> "unit_price";
+            case 3 -> "sku";
+            case 4 -> "stock";
+            default -> "item_name";
         };
-    }
-
-    private void showAddSupplierDialog() {
-        SupplierFormData formData = promptForSupplier("Add Supplier", null);
-        if (formData == null) {
-            return;
-        }
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(INSERT_SUPPLIER_SQL)) {
-            statement.setString(1, formData.supplierName());
-            statement.setString(2, formData.contactPerson());
-            statement.setString(3, formData.phone());
-            statement.setString(4, formData.email());
-            statement.setString(5, formData.address());
-            statement.executeUpdate();
-
-            JOptionPane.showMessageDialog(this, "Supplier added successfully.");
-            jTextField1.setText("");
-            jTextField2.setText("");
-            loadSuppliersTable();
-        } catch (SQLException ex) {
-            showDatabaseError("Unable to add supplier.", ex);
-        }
-    }
-
-    private void showEditSupplierDialog() {
-        String identifier = resolveIdentifier(jTextField1);
-        if (identifier == null) {
-            JOptionPane.showMessageDialog(this, "Select a row or enter an ID/Name first.");
-            return;
-        }
-
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            SupplierRecord existingSupplier = findSupplier(connection, identifier);
-            if (existingSupplier == null) {
-                JOptionPane.showMessageDialog(this, "Supplier not found.");
-                return;
-            }
-
-            SupplierFormData updatedSupplier = promptForSupplier("Update Supplier", existingSupplier);
-            if (updatedSupplier == null) {
-                return;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(UPDATE_SUPPLIER_SQL)) {
-                statement.setString(1, updatedSupplier.supplierName());
-                statement.setString(2, updatedSupplier.contactPerson());
-                statement.setString(3, updatedSupplier.phone());
-                statement.setString(4, updatedSupplier.email());
-                statement.setString(5, updatedSupplier.address());
-                statement.setInt(6, existingSupplier.supplierId());
-                statement.setString(7, existingSupplier.supplierName());
-
-                int updated = statement.executeUpdate();
-                if (updated == 0) {
-                    JOptionPane.showMessageDialog(this, "No supplier was updated.");
-                    return;
-                }
-            }
-
-            JOptionPane.showMessageDialog(this, "Supplier updated successfully.");
-            jTextField1.setText("");
-            loadSuppliersTable();
-        } catch (SQLException ex) {
-            showDatabaseError("Unable to update supplier.", ex);
-        }
-    }
-
-    private void deleteSupplier() {
-        String identifier = resolveIdentifier(jTextField2);
-        if (identifier == null) {
-            JOptionPane.showMessageDialog(this, "Select a row or enter an ID/Name first.");
-            return;
-        }
-
-        int choice = JOptionPane.showConfirmDialog(
-                this,
-                "Remove this supplier?",
-                "Remove Supplier",
-                JOptionPane.YES_NO_OPTION
-        );
-        if (choice != JOptionPane.YES_OPTION) {
-            return;
-        }
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_SUPPLIER_SQL)) {
-            statement.setInt(1, parseIdentifierAsInt(identifier));
-            statement.setString(2, identifier);
-
-            int updated = statement.executeUpdate();
-            if (updated == 0) {
-                JOptionPane.showMessageDialog(this, "Supplier not found.");
-                return;
-            }
-
-            JOptionPane.showMessageDialog(this, "Supplier removed successfully.");
-            jTextField2.setText("");
-            loadSuppliersTable();
-        } catch (SQLException ex) {
-            showDatabaseError("Unable to remove supplier.", ex);
-        }
-    }
-
-    private String resolveIdentifier(JTextField field) {
-        String typed = field.getText().trim();
-        if (!typed.isEmpty()) {
-            return typed;
-        }
-
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow >= 0) {
-            return String.valueOf(jTable1.getValueAt(selectedRow, 0));
-        }
-        return null;
-    }
-
-    private SupplierRecord findSupplier(Connection connection, String identifier) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(FIND_SUPPLIER_SQL)) {
-            statement.setInt(1, parseIdentifierAsInt(identifier));
-            statement.setString(2, identifier);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (!resultSet.next()) {
-                    return null;
-                }
-
-                return new SupplierRecord(
-                        resultSet.getInt("supplier_id"),
-                        resultSet.getString("supplier_name"),
-                        resultSet.getString("contact_person"),
-                        resultSet.getString("phone"),
-                        resultSet.getString("email"),
-                        resultSet.getString("address")
-                );
-            }
-        }
-    }
-
-    private SupplierFormData promptForSupplier(String title, SupplierRecord existingSupplier) {
-        JTextField nameField = new JTextField(existingSupplier != null ? existingSupplier.supplierName() : "");
-        JTextField contactField = new JTextField(existingSupplier != null ? safe(existingSupplier.contactPerson()) : "");
-        JTextField phoneField = new JTextField(existingSupplier != null ? safe(existingSupplier.phone()) : "");
-        JTextField emailField = new JTextField(existingSupplier != null ? safe(existingSupplier.email()) : "");
-        JTextField addressField = new JTextField(existingSupplier != null ? safe(existingSupplier.address()) : "");
-
-        JPanel panel = new JPanel(new java.awt.GridLayout(0, 2, 8, 8));
-        panel.add(new JLabel("Supplier Name"));
-        panel.add(nameField);
-        panel.add(new JLabel("Contact Person"));
-        panel.add(contactField);
-        panel.add(new JLabel("Phone"));
-        panel.add(phoneField);
-        panel.add(new JLabel("Email"));
-        panel.add(emailField);
-        panel.add(new JLabel("Address"));
-        panel.add(addressField);
-
-        int result = JOptionPane.showConfirmDialog(
-                this,
-                panel,
-                title,
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE
-        );
-
-        if (result != JOptionPane.OK_OPTION) {
-            return null;
-        }
-
-        String supplierName = nameField.getText().trim();
-        if (supplierName.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Supplier name is required.");
-            return null;
-        }
-
-        return new SupplierFormData(
-                supplierName,
-                contactField.getText().trim(),
-                phoneField.getText().trim(),
-                emailField.getText().trim(),
-                addressField.getText().trim()
-        );
-    }
-
-    private int parseIdentifierAsInt(String identifier) {
-        try {
-            return Integer.parseInt(identifier);
-        } catch (NumberFormatException ex) {
-            return -1;
-        }
-    }
-
-    private String safe(String value) {
-        return value == null ? "" : value;
-    }
-
-    private void showDatabaseError(String message, SQLException ex) {
-        logger.log(java.util.logging.Level.SEVERE, message, ex);
-        JOptionPane.showMessageDialog(
-                this,
-                message + "\n" + ex.getMessage(),
-                "Database Error",
-                JOptionPane.ERROR_MESSAGE
-        );
     }
 
     private void openDashboard() {
@@ -751,8 +469,8 @@ public class Supplier_Page extends javax.swing.JFrame {
         dispose();
     }
 
-    private void openLowStocksPage() {
-        new Low_stocks_page(loggedInUser).setVisible(true);
+    private void openSuppliersPage() {
+        new Supplier_Page(loggedInUser).setVisible(true);
         dispose();
     }
 
@@ -773,25 +491,6 @@ public class Supplier_Page extends javax.swing.JFrame {
             new LoginFrame().setVisible(true);
             dispose();
         }
-    }
-
-    private record SupplierRecord(
-            int supplierId,
-            String supplierName,
-            String contactPerson,
-            String phone,
-            String email,
-            String address
-    ) {
-    }
-
-    private record SupplierFormData(
-            String supplierName,
-            String contactPerson,
-            String phone,
-            String email,
-            String address
-    ) {
     }
 
     /**
@@ -816,13 +515,10 @@ public class Supplier_Page extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Supplier_Page().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new Low_stocks_page().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
@@ -832,14 +528,10 @@ public class Supplier_Page extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -847,8 +539,6 @@ public class Supplier_Page extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private panels.SidePanel sidePanel2;
     // End of variables declaration//GEN-END:variables

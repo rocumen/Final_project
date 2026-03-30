@@ -96,6 +96,8 @@ public class Item_Page extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -113,7 +115,6 @@ public class Item_Page extends javax.swing.JFrame {
         jTextField3 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(940, 640));
 
         panelBorder1.setBackground(new java.awt.Color(229, 229, 229));
         panelBorder1.setPreferredSize(new java.awt.Dimension(920, 640));
@@ -257,7 +258,7 @@ public class Item_Page extends javax.swing.JFrame {
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel13.setText("Manage Reports");
+        jLabel13.setText("Low stocks");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -266,7 +267,7 @@ public class Item_Page extends javax.swing.JFrame {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addGap(47, 47, 47)
                 .addComponent(jLabel13)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -277,6 +278,32 @@ public class Item_Page extends javax.swing.JFrame {
         );
 
         sidePanel2.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 220, -1));
+
+        jPanel9.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel14.setText("Manage Report");
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addComponent(jLabel14)
+                .addContainerGap(65, Short.MAX_VALUE))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jLabel14)
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
+        sidePanel2.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 220, -1));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setText("Item");
@@ -451,6 +478,8 @@ public class Item_Page extends javax.swing.JFrame {
         makeClickable(jPanel2, jLabel2, this::openDashboard);
         makeClickable(jPanel5, jLabel5, null);
         makeClickable(jPanel6, jLabel12, this::openSuppliersPage);
+        makeClickable(jPanel8, jLabel13, this::openLowStocksPage);
+        makeClickable(jPanel9, jLabel14, this::openManageReportPage);
         makeClickable(jPanel3, jLabel3, this::logout);
 
         jButton1.addActionListener(e -> showAddItemDialog());
@@ -801,6 +830,16 @@ public class Item_Page extends javax.swing.JFrame {
         dispose();
     }
 
+    private void openLowStocksPage() {
+        new Low_stocks_page(loggedInUser).setVisible(true);
+        dispose();
+    }
+
+    private void openManageReportPage() {
+        new Manage_report_page(loggedInUser).setVisible(true);
+        dispose();
+    }
+
     private void logout() {
         int choice = JOptionPane.showConfirmDialog(
                 this,
@@ -871,6 +910,7 @@ public class Item_Page extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -886,6 +926,7 @@ public class Item_Page extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;

@@ -15,6 +15,8 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import page.Item_Page;
+import page.Low_stocks_page;
+import page.Manage_report_page;
 import page.Supplier_Page;
 
 /**
@@ -80,6 +82,8 @@ public class Main extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel16 = new javax.swing.JLabel();
         box11 = new panels.Box1();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -219,7 +223,7 @@ public class Main extends javax.swing.JFrame {
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel12.setText("Manage Reports");
+        jLabel12.setText("Manage Report");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -228,7 +232,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(47, 47, 47)
                 .addComponent(jLabel12)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,7 +242,7 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        sidePanel2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 220, -1));
+        sidePanel2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 220, -1));
 
         jPanel7.setBackground(new java.awt.Color(102, 102, 102));
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -265,6 +269,32 @@ public class Main extends javax.swing.JFrame {
         );
 
         sidePanel2.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 220, -1));
+
+        jPanel8.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel16.setText("Low stocks");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addComponent(jLabel16)
+                .addContainerGap(97, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jLabel16)
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
+        sidePanel2.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 220, -1));
 
         panelBorder2.add(sidePanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, -1));
 
@@ -501,8 +531,13 @@ public class Main extends javax.swing.JFrame {
         configureDashboardTables();
         makeClickable(jPanel2, jLabel2, null);
         makeClickable(jPanel5, jLabel5, this::openItemsPage);
+        makeClickable(jPanel6, jLabel12, this::openManageReportPage);
         makeClickable(jPanel7, jLabel13, this::openSuppliersPage);
+        makeClickable(jPanel8, jLabel16, this::openLowStocksPage);
         makeClickable(jPanel3, jLabel3, this::logout);
+        makeClickable(box12, this::openLowStocksPage);
+        makeClickable(jLabel7, this::openLowStocksPage);
+        makeClickable(jLabel8, this::openLowStocksPage);
         loadDashboardData();
     }
 
@@ -528,23 +563,24 @@ public class Main extends javax.swing.JFrame {
         });
     }
 
-    private void makeClickable(java.awt.Component panel, java.awt.Component label, Runnable action) {
-        panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    private void makeClickable(java.awt.Component component, Runnable action) {
+        component.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         if (action == null) {
             return;
         }
 
-        MouseAdapter handler = new MouseAdapter() {
+        component.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 action.run();
             }
-        };
+        });
+    }
 
-        panel.addMouseListener(handler);
-        label.addMouseListener(handler);
+    private void makeClickable(java.awt.Component panel, java.awt.Component label, Runnable action) {
+        makeClickable(panel, action);
+        makeClickable(label, action);
     }
 
     private void loadDashboardData() {
@@ -644,6 +680,16 @@ public class Main extends javax.swing.JFrame {
         dispose();
     }
 
+    private void openLowStocksPage() {
+        new Low_stocks_page(loggedInUser).setVisible(true);
+        dispose();
+    }
+
+    private void openManageReportPage() {
+        new Manage_report_page(loggedInUser).setVisible(true);
+        dispose();
+    }
+
     private void logout() {
         int choice = JOptionPane.showConfirmDialog(
                 this,
@@ -669,6 +715,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -683,6 +730,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
